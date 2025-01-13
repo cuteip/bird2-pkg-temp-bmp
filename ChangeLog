@@ -1,18 +1,96 @@
-commit 6a55359b1eeba099dddf410bb37137370fe19b86
-Author: Ondrej Zajicek <santiago@crfreenet.org>
-Date:   Fri Dec 6 04:06:16 2024 +0100
+commit 11913f58cb20a55e95458a1cbf4c63c2a1cea70a
+Author: Maria Matejka <mq@ucw.cz>
+Date:   Thu Jan 9 21:51:15 2025 +0100
 
-    BGP: Graceful restart timer overrides
+    NEWS and version update
+
+commit abecb5bb408f253cd24345ba94940ea0f7b59f4f
+Author: Ondrej Zajicek <santiago@crfreenet.org>
+Date:   Thu Jan 9 16:44:51 2025 +0100
+
+    lib: Unify alignment of allocators
     
-    Implement several options (min/max graceful restart time, min/max long
-    lived stale time) to override graceful restart and long-lived graceful
-    restart timer values, as suggested by RFC 9494.
+    Different internal allocators (memory blocks, linpools, and slabs) used
+    different way to compute alignment. Unify it to use alignment based on
+    standard max_align_t type.
+    
+    On x86_64, this does not change alignment of memory blocks and linpools
+    (both old and new is 16), but it increases alignment of slabs from 8 to
+    16.
+    
+    Minor changes by commiter.
 
-commit fc5d06c28db76073373ab99e9dc88e3739abebee
+commit 85aa283071ed75059fd8c889bc4ee33be1f901af
+Author: Maria Matejka <mq@ucw.cz>
+Date:   Thu Dec 26 11:34:02 2024 +0100
+
+    Static: fixed ASPA reconfiguration
+    
+    Due to an oversight, the provider lists weren't compared on reconfiguration.
+    
+    Reported-By: Ralph Covelli <rcovelli@he.net>
+
+commit d221f39731be40ed3821f8db09d590edb849cb0c
 Author: Ondrej Zajicek <santiago@crfreenet.org>
-Date:   Thu Dec 5 16:35:01 2024 +0100
+Date:   Tue Dec 17 09:00:42 2024 +0100
 
-    BGP: Update LLGR draft references to RFC 9494
+    Nest: Fix handling of 64-bit rte_src.private_id
+    
+    The commit 21213be523baa7f2cbf0feaa617f265c55e9b17a expanded private_id
+    in route source to u64, but forgot to modify function arguments, so it
+    was still cropped at 32-bit, which may cause some collisions for L3VPN.
+    This patch fixes that.
+
+commit fe5ca3fa7dfc3b720e7dedd68dbb891ba75ac157
+Author: Ondrej Zajicek <santiago@crfreenet.org>
+Date:   Mon Dec 16 19:29:27 2024 +0100
+
+    Doc: Fix protocol outline in RPKI
+    
+    Protocol outlines should not contain specific values.
+    
+    Also fix some space intendation in code sections.
+
+commit e063365590b9b857a5bd0acfa519783eba639bbf
+Author: Ondrej Zajicek <santiago@crfreenet.org>
+Date:   Mon Dec 16 18:56:30 2024 +0100
+
+    Lib: Ensure that all net_addr structures have the same alignment
+    
+    Also weaken the explicit alignment of net_addr to be u32, as VPN
+    is already u32-aligned.
+
+commit cf659a05a4cf5ead18e0cfa5489db3c1b5c67fe6
+Author: Ondrej Zajicek <santiago@crfreenet.org>
+Date:   Mon Dec 16 18:27:42 2024 +0100
+
+    Lib: Data type for VPN route distinguishers
+    
+    Use a distinct data structure for VPN route distinguishers instead
+    of just u64.
+
+commit f9c7861e116ad8dc5e5a2314d0f976bf8c938de0
+Author: Ondrej Zajicek <santiago@crfreenet.org>
+Date:   Thu Dec 12 04:04:07 2024 +0100
+
+    Netlink: Handle onlink flag on BSD-Netlink
+    
+    On BSD, the onlink flag is not tracked or reported by kernel. We are
+    using an heuristic that assigns the onlink flag to routes scanned from
+    the kernel. We should use the same heuristic even in BSD-Netlink
+    case, as the onlink flag is not reported here too.
+    
+    Thanks to Björn König for the original patch.
+
+commit de7ded6ef614ae3138599b8a322f3eb6c204d57b
+Author: Fabian Bläse <fabian@blaese.de>
+Date:   Tue Dec 10 02:14:06 2024 +0100
+
+    Babel: fix seqno wrapping on seqno request
+    
+    The Babel seqno wraps around when reaching its maximum value (UINT16_MAX).
+    When comparing seqnos, this has to be taken into account. Therefore,
+    plain number comparisons do not work.
 
 commit 1dbee120d383981811aa47b244886962ebd345c0
 Author: Ondrej Zajicek <santiago@crfreenet.org>
