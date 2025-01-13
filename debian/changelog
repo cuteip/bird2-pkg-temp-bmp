@@ -1,3 +1,11 @@
+bird2 (2.16.1-1) unstable; urgency=medium
+
+  * New upstream version 2.16.1
+  * Rename Salsa branch to debian/master
+  * Remove Ondrej as Uploader per his request
+
+ -- Jakub Ružička <jru@debian.org>  Mon, 13 Jan 2025 16:14:48 +0100
+
 bird2 (2.16-1) unstable; urgency=medium
 
   * New upstream version 2.16
