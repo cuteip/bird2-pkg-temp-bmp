@@ -302,6 +302,7 @@ proto_item:
  | DEBUG debug_mask { this_proto->debug = $2; }
  | MRTDUMP mrtdump_mask { this_proto->mrtdump = $2; }
  | ROUTER ID idval { this_proto->router_id = $3; }
+ | HOSTNAME text { this_proto->hostname = $2; }
  | DESCRIPTION text { this_proto->dsc = $2; }
  | VRF text { this_proto->vrf = if_get_by_name($2); this_proto->vrf_set = 1; }
  | VRF DEFAULT { this_proto->vrf = NULL; this_proto->vrf_set = 1; }
@@ -868,6 +869,8 @@ CF_CLI(DUMP RESOURCES, text,, [[Dump all allocated resource]])
 { cmd_dump_file(this_cli, $3, "resources", resource_dump); } ;
 CF_CLI(DUMP SOCKETS, text,, [[Dump open sockets]])
 { cmd_dump_file(this_cli, $3, "sockets", sk_dump_all); } ;
+CF_CLI(DUMP AO KEYS, text,, [[Dump TCP-AO keys on sockets ]])
+{ cmd_dump_file(this_cli, $4, "AO keys", sk_dump_ao_all); } ;
 CF_CLI(DUMP EVENTS, text,, [[Dump event log]])
 { cmd_dump_file(this_cli, $3, "event log", io_log_dump); } ;
 CF_CLI(DUMP INTERFACES, text,, [[Dump interface information]])
