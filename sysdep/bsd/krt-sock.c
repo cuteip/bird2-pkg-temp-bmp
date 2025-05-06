@@ -318,7 +318,7 @@ krt_send_route(struct krt_proto *p, int cmd, rte *e)
       msg.rtm.rtm_flags |= RTF_GATEWAY;
       msg.rtm.rtm_addrs |= RTA_GATEWAY;
       break;
-    }
+    } /* fallthrough */
 
 #ifdef RTF_REJECT
   case RTD_UNREACHABLE:
@@ -421,8 +421,17 @@ krt_read_route(struct ks_msg *msg, struct krt_proto *p, int scan)
   if (!(flags & RTF_DONE) && !scan)
     SKIP("not done in async\n");
 
+#ifdef RTF_LLINFO
+  /* Obsolete in FreeBSD and NetBSD, still used in OpenBSD */
   if (flags & RTF_LLINFO)
     SKIP("link-local\n");
+#endif
+
+#ifdef RTF_LLDATA
+  /* Reported by NetBSD */
+  if (flags & RTF_LLDATA)
+    SKIP("link-local\n");
+#endif
 
   GETADDR(&dst, RTA_DST);
   GETADDR(&gate, RTA_GATEWAY);
@@ -843,7 +852,8 @@ krt_read_msg(struct proto *p, struct ks_msg *msg, int scan)
   switch (msg->rtm.rtm_type)
   {
     case RTM_GET:
-      if(!scan) return;
+      if (!scan) return;
+      /* fallthrough */
     case RTM_ADD:
     case RTM_DELETE:
     case RTM_CHANGE:
